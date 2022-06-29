@@ -1,11 +1,11 @@
 # termbox2
 
-A tiny bindings shard plus a bit more for [https://github.com/termbox/termbox2](termbox2).
+A tiny bindings shard plus a bit more for [termbox2](https://github.com/termbox/termbox2).
 Docs & comments & stuff stolen from there. The library is pretty cool except for a bunch
 of key event (key name) clashes which are too weird to even discuss, and the termbox2 devs
 aren't those to blame (it seems).
 
-Planned for use in [https://github.com/homonoidian/novika](Novika), may contain
+Planned for use in [Novika](https://github.com/homonoidian/novika), may contain
 bugs & bad things because I never did bindings before and I don't like C.
 
 ## Installation
