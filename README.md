@@ -8,11 +8,6 @@ aren't those to blame (it seems).
 Planned for use in [https://github.com/homonoidian/novika](Novika), may contain
 bugs & bad things because I never did bindings before and I don't like C.
 
-Also IDK how you'd ship the `.so` but whatever. That `build.sh` seems like an
-ugly thing. Honestly, Crystal should have a native (and possibly stdlib) Termbox-
-like lib, and I don't think it's too much to implement. Just saying though, after
-all, I could have done it but didn't.
-
 ## Installation
 
 1. Add the dependency to your `shard.yml`:
