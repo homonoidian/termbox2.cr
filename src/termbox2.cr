@@ -100,7 +100,7 @@ module Termbox
       # it's EINTR, you can safely ignore that and peek again.
       peek?(timeout) if LibTermbox.last_errno == Errno::EINTR
     else
-      raise "termbox error: #{err}"
+      raise TermboxError.new(err)
     end
   end
 
