@@ -20,7 +20,7 @@ all, I could have done it but didn't.
    ```yaml
    dependencies:
      termbox2:
-       github: homonoidian/termbox2
+       github: homonoidian/termbox2.cr
    ```
 
 2. Run `shards install`
@@ -28,7 +28,7 @@ all, I could have done it but didn't.
 ## Usage
 
 ```crystal
-require ".termbox2"
+require "termbox2"
 
 include Termbox
 include Termbox::Event
@@ -94,7 +94,7 @@ TODO: Write development instructions here
 
 ## Contributing
 
-1. Fork it (<https://github.com/homonoidian/termbox2/fork>)
+1. Fork it (<https://github.com/homonoidian/termbox2.cr/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
