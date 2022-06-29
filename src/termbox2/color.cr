@@ -67,8 +67,10 @@ module Termbox
   # Translates any RGB color between terminal ouput modes
   # (see `OutputMode`).
   record Color < IColor, r : Int32, g : Int32, b : Int32, also = Also::Default do
+    # :nodoc:
+    #
     # RGBs of Mode::M8 colors.
-    private M8_COLORS = {
+    M8_COLORS = {
       {0, 0, 0},
       {128, 0, 0},
       {0, 128, 0},
@@ -80,8 +82,10 @@ module Termbox
       {128, 128, 128},
     }
 
+    # :nodoc:
+    #
     # RGBs of Mode::M256 colors.
-    private M256_COLORS = {
+    M256_COLORS = {
       {0, 0, 0},
       {128, 0, 0},
       {0, 128, 0},
@@ -352,7 +356,7 @@ module Termbox
     Default = DefaultColor.new
 
     # An output-mode-independent attribute. Exists to delay
-    # selection between `TermColor` and `TrueColor`.
+    # selection between `NormalColor` and `TrueColor`.
     enum Also
       Default
       Bold
