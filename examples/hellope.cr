@@ -38,7 +38,7 @@ Termbox.each(33.milliseconds) do |event|
     y = y < 0 ? 0 : Termbox.height - 3
   end
 
-  Termbox.print(x.to_i, y.to_i, Color::Default | Color::Also::Italic, Color::Default, h)
+  Termbox.print(x.to_i, y.to_i, Color::White | Color::Also::Italic, Color::Default, h)
   Termbox.present
   h = h > 360 ? 0 : h + 1
 end

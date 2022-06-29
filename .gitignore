@@ -1,6 +1,7 @@
 /docs/
 /lib/
 /bin/
+/src/termbox2/lib/termbox2
 /.shards/
 *.dwarf
 
