@@ -1,0 +1,12 @@
+name: termbox2
+version: 0.1.0
+
+authors:
+  - Alexey Yurchenko <homonoidian@yandex.ru>
+
+scripts:
+  postinstall: ./build.sh
+
+crystal: 1.4.1
+
+license: MIT
