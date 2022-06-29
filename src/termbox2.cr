@@ -6,6 +6,8 @@ module Termbox
   extend self
   include Event
 
+  alias Attribute = IColor | Color::Also
+
   # Returns whether Termbox is currently enabled.
   class_getter? enabled = false
 
@@ -18,8 +20,10 @@ module Termbox
     end
   end
 
-  # Raises if a negative value is returned by *call*. This is
-  # considered an error in termbox.
+  # :nodoc:
+  #
+  # Raises if a negative value is returned by *call*. This
+  # is considered an error in Termbox.
   macro try!(call)
     if (%code = {{call}}).negative?
       raise TermboxError.new(%code)
@@ -27,18 +31,18 @@ module Termbox
   end
 
   # Returns the width of the terminal window (in columns).
-  def width
+  def width : Int32
     LibTermbox.width.to_i
   end
 
   # Returns the width of the terminal window (in rows).
-  def height
+  def height : Int32
     LibTermbox.height.to_i
   end
 
-  # Moves the cursor to the specified position (in rows,
-  # columns). Upper-left corner is at (0, 0). Shows it if
-  # it was hidden.
+  # Moves the cursor to the specified position (in rows, cols).
+  # Upper-left corner is at (0, 0). The cursor is shown if it
+  # was hidden.
   def set_cursor(x, y)
     try! LibTermbox.set_cursor(x, y)
   end
@@ -54,29 +58,28 @@ module Termbox
     try! LibTermbox.present
   end
 
-  # Clears the internal back buffer using `Color::Default`
+  # Clears the internal back buffer using `NormalColor::Default`
   # or the color/attributes set by `clear(fg, bg)`.
   def clear
     try! LibTermbox.clear
   end
 
-  # Sets clear background and foreground color/attributes.
-  def clear(fg : Color, bg : Color)
+  # Sets clear background and foreground attributes.
+  def clear(fg : Attribute, bg : Attribute)
     mode = get_output_mode
-
     try! LibTermbox.set_clear_attrs(fg.for(mode), bg.for(mode))
   end
 
-  # Prints the string representation of *object* at the
-  # specified position, with the specified attributes.
-  def print(x, y, fg : Color, bg : Color, object)
-    string = object.to_s
-    width = string.bytesize.to_u64
+  # Prints the string representation of *object* at the given
+  # position, with the given foreground and background attributes.
+  def print(x, y, fg : Attribute, bg : Attribute, object)
+    text = object.to_s
+    size = text.bytesize.to_u64
     mode = get_output_mode
-    try! LibTermbox.print(x, y, fg.for(mode), bg.for(mode), pointerof(width), string.to_unsafe)
+    try! LibTermbox.print(x, y, fg.for(mode), bg.for(mode), pointerof(size), text.to_unsafe)
   end
 
-  # Waits for an event up to *timeout* and returns an `Event`,
+  # Waits for an event up to *timeout* and returns a `BaseEvent`,
   # or nil if no event is available within the timeout.
   def peek?(timeout : Time::Span) : BaseEvent?
     peek?(timeout.milliseconds)

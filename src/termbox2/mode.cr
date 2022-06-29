@@ -1,7 +1,7 @@
 module Termbox
   # Input modes (bitwise).
   enum InputMode : LibC::Int
-    # Makes `Termbox.input_mode` return the current input mode.
+    # Makes `Termbox.get_input_mode` return the current input mode.
     Current = 0
 
     # When escape (`\x1b`) is in the buffer and there's no
@@ -24,12 +24,12 @@ module Termbox
 
   # Output modes.
   enum OutputMode : LibC::Int
-    # Makes `Termbox.output_mode` return the current output mode.
+    # Makes `Termbox.get_output_mode` return the current output mode.
     Current
 
-    # This mode provides 8 different `Color`s: black, red,
-    # green, yellow, blue, magenta, cyan, white. Colors may
-    # be bitwise OR'd with attributes: bold, italic, underline,
+    # This mode provides 8 different `NormalColor`s: black,
+    # red, green, yellow, blue, magenta, cyan, white. Colors
+    # may be bitwise OR'd with attributes: bold, italic, underline,
     # reverse, blink (note that bold, underline, italic, blink
     # only apply to foreground).
     Normal
