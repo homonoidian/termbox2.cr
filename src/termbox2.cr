@@ -70,6 +70,16 @@ module Termbox
     try! LibTermbox.set_clear_attrs(fg.for(mode), bg.for(mode))
   end
 
+  # Changes the attributes of the cell at *x*, *y*. *fill*
+  # specifies the character that is used when the referred
+  # cell has no content, otherwise, existing cel lcontent
+  # is used.
+  def change(x, y, fg : Attribute = Color::Default, bg : Attribute = Color::Default, fill = ' ')
+    mode = get_output_mode
+    backup = fill.ord.to_u32
+    LibTermbox.change(x, y, pointerof(backup), fg.for(mode), bg.for(mode))
+  end
+
   # Prints the string representation of *object* at the given
   # position, with the given foreground and background attributes.
   def print(x, y, fg : Attribute, bg : Attribute, object)
@@ -77,6 +87,12 @@ module Termbox
     size = text.bytesize.to_u64
     mode = get_output_mode
     try! LibTermbox.print(x, y, fg.for(mode), bg.for(mode), pointerof(size), text.to_unsafe)
+  end
+
+  # Prints the string representation of *object* at the given
+  # position with default attributes (see `Color::Default`).
+  def print(x, y, object)
+    print(x, y, Color::Default, Color::Default, object)
   end
 
   # Waits for an event up to *timeout* and returns a `BaseEvent`,

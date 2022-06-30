@@ -21,10 +21,10 @@ lib LibTermbox
     mod : LibC::UInt8T
     key : LibC::UInt16T
     ch : LibC::UInt32T
-    w : LibC::Int
-    h : LibC::Int
-    x : LibC::Int
-    y : LibC::Int
+    w : Int
+    h : Int
+    x : Int
+    y : Int
   end
 
   fun init = tb_init : Int
@@ -45,4 +45,5 @@ lib LibTermbox
   fun peek = tb_peek_event(event : Event*, timeout_ms : Int) : Int
   fun last_errno = tb_last_errno : Int
   fun strerror = tb_strerror(err : Int) : UInt8*
+  fun change = tb_set_cell_attrs(x : Int, y : Int, bch : LibC::UInt32T*, fg : UInt32, bg : UInt32)
 end

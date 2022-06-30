@@ -1,0 +1,32 @@
+--- termbox2_orig/termbox.h	2022-06-30 13:23:34.999502420 +0300
++++ termbox2/termbox.h	2022-06-30 13:24:58.444765723 +0300
+@@ -406,6 +406,9 @@
+     uintattr_t bg);
+ int tb_extend_cell(int x, int y, uint32_t ch);
+
++int tb_set_cell_attrs(int x, int y, uint32_t *bch, uintattr_t fg,
++    uintattr_t bg);
++
+ /* Sets the input mode. Termbox has two input modes:
+  *
+  * 1. TB_INPUT_ESC
+
+@@ -1582,6 +1586,18 @@
+ #endif
+ }
+
++int tb_set_cell_attrs(int x, int y, uint32_t *bch, uintattr_t fg,
++    uintattr_t bg) {
++    if_not_init_return();
++    int rv;
++    struct tb_cell *cell;
++    if_err_return(rv, cellbuf_get(&global.back, x, y, &cell));
++    // If null on the original cell, use backup char.
++    uint32_t *ch = cell->ch == 0 ? bch : &cell->ch;
++    if_err_return(rv, cell_set(cell, ch, 1, fg, bg));
++    return TB_OK;
++}
++
+ int tb_set_input_mode(int mode) {
+     if_not_init_return();
+     if (mode == TB_INPUT_CURRENT) {
