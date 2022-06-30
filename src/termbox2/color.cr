@@ -30,7 +30,7 @@ module Termbox
   abstract struct IColor
     # Returns this color's attribute.
     def also
-      Color::Also::Default
+      Color::Also::None
     end
 
     # Returns this color's value for the given output *mode*.
@@ -50,7 +50,7 @@ module Termbox
   end
 
   # Default color for the current color mode.
-  record DefaultColor < IColor, also = Color::Also::Default do
+  record DefaultColor < IColor, also = Color::Also::None do
     # Even though both are basically zero, I think the difference
     # is in number size: NormalColor is uint16_t and true color
     # is uint64_t.
@@ -60,13 +60,13 @@ module Termbox
     getter truecolor = TrueColor::Default
 
     def |(also also_ : Color::Also)
-      DefaultColor.new(also_)
+      DefaultColor.new(also | also_)
     end
   end
 
   # Translates any RGB color between terminal ouput modes
   # (see `OutputMode`).
-  record Color < IColor, r : Int32, g : Int32, b : Int32, also = Also::Default do
+  record Color < IColor, r : Int32, g : Int32, b : Int32, also = Also::None do
     # :nodoc:
     #
     # RGBs of Mode::M8 colors.
@@ -357,26 +357,57 @@ module Termbox
 
     # An output-mode-independent attribute. Exists to delay
     # selection between `NormalColor` and `TrueColor`.
+    @[Flags]
     enum Also
-      Default
+      None      = 0
       Bold
       Underline
       Reverse
       Italic
       Blink
 
-      # Returns the concrete attribute for *mode*.
-      def for(mode : OutputMode)
-        name = Also.names[to_i]
+      # Returns the index of this member.
+      def ord
+        {None, Bold, Underline, Reverse, Italic, Blink}.index(self).not_nil!
+      end
 
+      # Creates an `Also` from a member's index.
+      def self.[](ord)
+        self[ord]? || raise "Also: no member with index #{ord}"
+      end
+
+      # :ditto:
+      def self.[]?(ord)
+        {None, Bold, Underline, Reverse, Italic, Blink}[ord]?
+      end
+
+      # Returns the amount of enum members.
+      def self.count
+        names.size
+      end
+
+      # :nodoc:
+      #
+      # Returns the concrete attribute for *mode*.
+      def pick(mode : OutputMode)
         case mode
-        when .normal?, .m256?
-          NormalColor.parse(name).to_u32
-        when .truecolor?
-          TrueColor.parse(name).to_u64
+        when .truecolor? then TrueColor.parse(TrueColor.names[ord])
+        when .m256?, .normal?
+          if ord.zero?
+            NormalColor::Default
+          else
+            NormalColor.parse(NormalColor.names[ord + 8])
+          end
         else
-          raise "not implemented yet"
+          raise "not implemented"
         end
+      end
+
+      # Returns the concrete attribute(s) for *mode*.
+      def for(mode : OutputMode)
+        comb = None.pick(mode).value
+        each { |flag| comb |= flag.pick(mode).value }
+        comb
       end
     end
 
@@ -436,16 +467,16 @@ module Termbox
     #
     # https://github.com/watzon/cor
 
-    private module HueToRgb
-      # Helper for making rgb.
-      def self.hue_to_rgb(m1, m2, h)
-        h += 1 if h < 0
-        h -= 1 if h > 1
-        return m1 + (m2 - m1) * h * 6 if h * 6 < 1
-        return m2 if h * 2 < 1
-        return m1 + (m2 - m1) * (2.0/3 - h) * 6 if h * 3 < 2
-        return m1
-      end
+    # :nodoc:
+    #
+    # Helper for making rgb.
+    def self.hue_to_rgb(m1, m2, h)
+      h += 1 if h < 0
+      h -= 1 if h > 1
+      return m1 + (m2 - m1) * h * 6 if h * 6 < 1
+      return m2 if h * 2 < 1
+      return m1 + (m2 - m1) * (2.0/3 - h) * 6 if h * 3 < 2
+      return m1
     end
 
     # Shorthand for `new` but converts the given HSL to RGB first.
@@ -454,9 +485,9 @@ module Termbox
       m1 = l * 2 - m2
 
       rgb = [
-        HueToRgb.hue_to_rgb(m1, m2, h + 1.0 / 3),
-        HueToRgb.hue_to_rgb(m1, m2, h),
-        HueToRgb.hue_to_rgb(m1, m2, h - 1.0 / 3),
+        hue_to_rgb(m1, m2, h + 1.0 / 3),
+        hue_to_rgb(m1, m2, h),
+        hue_to_rgb(m1, m2, h - 1.0 / 3),
       ].map { |c| (c * 0xff).round }
 
       new(rgb[0].to_i, rgb[1].to_i, rgb[2].to_i)

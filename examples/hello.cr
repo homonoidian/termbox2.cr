@@ -97,10 +97,11 @@ Termbox.each do |event|
       inc = +1
     end
     inc ||= 0
-    if Color::Also.valid?(s.attr + inc)
-      s.attr += inc
+    attrord = s.attr.ord
+    if 0 <= attrord + inc < Color::Also.count
+      s.attr = Color::Also[attrord + inc]
     else
-      s.attr = Color::Also.new(inc < 0 ? Color::Also.names.size - 1 : 0)
+      s.attr = Color::Also[inc < 0 ? Color::Also.count : 0]
     end
   end
 

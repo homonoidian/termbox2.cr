@@ -72,7 +72,7 @@ module Termbox
 
   # Changes the attributes of the cell at *x*, *y*. *fill*
   # specifies the character that is used when the referred
-  # cell has no content, otherwise, existing cel lcontent
+  # cell has no content, otherwise, existing cell content
   # is used.
   def change(x, y, fg : Attribute = Color::Default, bg : Attribute = Color::Default, fill = ' ')
     mode = get_output_mode
