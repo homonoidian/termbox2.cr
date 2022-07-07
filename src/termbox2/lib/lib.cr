@@ -8,6 +8,7 @@ lib LibTermbox
   alias SizeT = LibC::SizeT
 
   ERR_NO_EVENT =  -6
+  ERR_NOT_INIT =  -8
   ERR_POLL     = -14
 
   enum EventType : UInt8

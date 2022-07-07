@@ -116,12 +116,12 @@ class Portal
   def initialize(@pos, @dst = nil)
   end
 
-  def tp(other)
-    dst.try { |it| other.to(it) }
+  def tp(entity)
+    dst.try { |it| entity.to(it) }
   end
 
-  def to(other)
-    self.pos = other
+  def to(entity)
+    self.pos = entity
   end
 
   def char
@@ -138,24 +138,22 @@ pout = Portal.new(SVec2.sample, pin)
 pin.dst = pout
 pout.dst = pin
 
-
 Termbox.each(33.milliseconds) do |event|
   key = event.as?(Termbox::Event::KeyEvent)
-  
+
   break if snake.dead? || (key && key.char == 'q')
- 
+
   if snake.at?(apple)
     apple = Apple.new(SVec2.sample)
     snake.grow
   elsif portal = {pin, pout}.find &.at?(snake)
     portal.tp(snake)
   end
-  
+
   # ! Snake must grow before step, o/w it will die.
   snake.apply(key) if key
   snake.step
-  
-  
+
   Termbox.clear
   snake.blit
   apple.blit

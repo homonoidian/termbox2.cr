@@ -32,11 +32,13 @@ module Termbox
 
   # Returns the width of the terminal window (in columns).
   def width : Int32
+    raise TermboxError.new(LibTermbox::ERR_NOT_INIT) unless enabled?
     LibTermbox.width.to_i
   end
 
   # Returns the width of the terminal window (in rows).
   def height : Int32
+    raise TermboxError.new(LibTermbox::ERR_NOT_INIT) unless enabled?
     LibTermbox.height.to_i
   end
 
