@@ -2,7 +2,7 @@ require "../mode"
 require "../event"
 require "../input"
 
-@[Link(ldflags: "#{__DIR__}/termbox2/libtermbox.a")]
+@[Link(ldflags: "#{__DIR__}/libtermbox2.a")]
 lib LibTermbox
   alias Int = LibC::Int
   alias SizeT = LibC::SizeT
