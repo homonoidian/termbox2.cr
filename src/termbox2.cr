@@ -169,16 +169,18 @@ module Termbox
     end
   end
 
-  # Initializes Termbox for the duration of the block. If *nap*
-  # is given and is not nil, does not wait for events but naps
-  # for that span between the non-blocking polls. Else, waits
-  # for events. Yields event to the block (can be nil).
-  def each(nap = nil)
+  # Initializes Termbox for the duration of the block.
+  #
+  # - If *nap* is `nil`, waits for an event indefinitely before calling
+  #   the block.
+  # - If *nap* is not `nil`, checks if an event in a non-blocking manner;
+  #   and yields that event (or `nil` if none) to the block. After the block,
+  #   sleeps for *nap*.
+  def each(nap = nil, & : BaseEvent? ->)
     enable
     at_exit { disable }
     loop do
-      # -1 is for blocking peek I suppose, but who knows?
-      yield peek?(nap || -1)
+      yield peek?(nap ? 0 : -1)
       sleep nap if nap
     rescue error
       disable
