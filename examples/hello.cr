@@ -39,6 +39,7 @@ def render(s)
   lines = [
     {"Output mode #{Termbox.get_output_mode} #{s.evt}", FG, BG},
     {"Hit Ctrl-q to quit", FG, BG},
+    {"Scroll thru output modes with Tab", FG, BG},
     {"Scroll thru attrs via mouse, current: #{s.attr}", FG, BG},
     {"Left mouse button to hi/unhi below", FG, BG},
     {"Right mouse button to draw", FG, BG},
