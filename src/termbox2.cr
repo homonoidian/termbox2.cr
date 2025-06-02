@@ -100,7 +100,7 @@ module Termbox
   # Waits for an event up to *timeout* and returns a `BaseEvent`,
   # or nil if no event is available within the timeout.
   def peek?(timeout : Time::Span) : BaseEvent?
-    peek?(timeout.milliseconds)
+    peek?(timeout.total_milliseconds)
   end
 
   # Waits for an event up to *timeout* milliseconds and
